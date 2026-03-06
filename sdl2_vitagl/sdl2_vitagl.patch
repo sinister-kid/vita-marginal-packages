@@ -1,0 +1,71 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index acde19e27..77e0fe8c9 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -2455,8 +2455,6 @@ elseif(VITA)
+     list(APPEND EXTRA_LIBS
+       SceIme_stub
+       SceGxm_stub
+-      SceDisplay_stub
+-      SceCtrl_stub
+       SceAppMgr_stub
+       SceAppUtil_stub
+       SceAudio_stub
+@@ -2508,10 +2506,10 @@ elseif(VITA)
+ #  set_property(SOURCE ${SDL2_SOURCE_DIR}/src/video/arm/pixman-arm-neon-asm.S PROPERTY LANGUAGE C)
+ 
+   target_compile_definitions(sdl-build-options INTERFACE "-D__VITA__")
+-  target_compile_definitions(sdl-build-options INTERFACE "-Dmemcpy=sceClibMemcpy")
+-  target_compile_definitions(sdl-build-options INTERFACE "-Dmemset=sceClibMemset")
+-  target_compile_definitions(sdl-build-options INTERFACE "-Dmemmove=sceClibMemmove")
+-  target_compile_definitions(sdl-build-options INTERFACE "-Dmemcmp=sceClibMemcmp")
++#  target_compile_definitions(sdl-build-options INTERFACE "-Dmemcpy=sceClibMemcpy")
++#  target_compile_definitions(sdl-build-options INTERFACE "-Dmemset=sceClibMemset")
++#  target_compile_definitions(sdl-build-options INTERFACE "-Dmemmove=sceClibMemmove")
++#  target_compile_definitions(sdl-build-options INTERFACE "-Dmemcmp=sceClibMemcmp")
+ 
+ #  CheckPTHREAD()
+ 
+diff --git a/src/render/opengles2/SDL_render_gles2.c b/src/render/opengles2/SDL_render_gles2.c
+index 9c541fb99..fd35625d0 100644
+--- a/src/render/opengles2/SDL_render_gles2.c
++++ b/src/render/opengles2/SDL_render_gles2.c
+@@ -39,6 +39,10 @@
+ #define USE_VERTEX_BUFFER_OBJECTS 0
+ #endif
+ 
++#if defined(SDL_VIDEO_VITA_VGL)
++extern void vglCgShaderSource(GLuint handle, GLsizei count, const GLchar *const *string, const GLint *length);
++#endif
++
+ /* To prevent unnecessary window recreation,
+  * these should match the defaults selected in SDL_GL_ResetAttributes
+  */
+diff --git a/src/video/vita/SDL_vitagles_vgl.c b/src/video/vita/SDL_vitagles_vgl.c
+index c554d6916..c72fe214a 100644
+--- a/src/video/vita/SDL_vitagles_vgl.c
++++ b/src/video/vita/SDL_vitagles_vgl.c
+@@ -41,6 +41,7 @@ VITA_GLES_LoadLibrary(_THIS, const char *path)
+     if (!vgl_initialized) {
+         // init vitaGL once and never deinit it again until the driver dies
+         enum SceGxmMultisampleMode gxm_ms;
++        char *binding_mode;
+ 
+         switch (_this->gl_config.multisamplesamples) { 
+             case 2:  gxm_ms = SCE_GXM_MULTISAMPLE_2X; break;
+@@ -51,6 +52,15 @@ VITA_GLES_LoadLibrary(_THIS, const char *path)
+         }
+ 
+         sceSysmoduleLoadModule(SCE_SYSMODULE_IME);
++
++        binding_mode = SDL_getenv("VITA_SEMANTIC_BINDING_MODE");
++        if (binding_mode) {
++            vglSemanticMode vglMode = VGL_MODE_POSTPONED;
++            if (!strcmp(binding_mode, "SHADER_PAIR")) vglMode = VGL_MODE_SHADER_PAIR;
++            else if (!strcmp(binding_mode, "GLOBAL")) vglMode = VGL_MODE_GLOBAL;
++            vglSetSemanticBindingMode(vglMode);
++        }
++
+         vglInitExtended(0, 960, 544, MEMORY_VITAGL_THRESHOLD, gxm_ms);
+         vgl_initialized = 1;
+     }

@@ -1,0 +1,28 @@
+pkgname=uchardet
+pkgver=0.0.8
+pkgrel=1
+url='https://www.freedesktop.org/wiki/Software/uchardet/'
+source=("https://gitlab.freedesktop.org/uchardet/uchardet/-/archive/v${pkgver}/uchardet-v${pkgver}.tar.gz")
+sha256sums=("5aa402a1b5b1dbb8d81096f141ff1224e079f4d3a1db0f79ecca782756d3a416")
+
+prepare () {
+  cd "uchardet-v${pkgver}"
+}
+
+build() {
+  cd "uchardet-v${pkgver}"
+  mkdir -p build && cd build
+  
+  cmake -DCMAKE_TOOLCHAIN_FILE=$VITASDK/share/vita.toolchain.cmake \
+        -DCMAKE_INSTALL_PREFIX=$prefix \
+        -DBUILD_BINARY=OFF \
+        -DBUILD_STATIC=ON \
+        -DBUILD_SHARED_LIBS=OFF ..
+
+  make -j$(nproc)
+}
+
+package () {
+  cd "uchardet-v${pkgver}/build"
+  make DESTDIR=$pkgdir install
+}

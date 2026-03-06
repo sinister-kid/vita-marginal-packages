@@ -1,0 +1,35 @@
+pkgname=libyaml
+pkgver=0.2.5
+pkgrel=1
+source=("https://github.com/yaml/${pkgname}/releases/download/${pkgver}/yaml-${pkgver}.tar.gz")
+sha256sums=("c642ae9b75fee120b2d96c712538bd2cf283228d2337df2cf2988e3c02678ef4")
+
+prepare () {
+  cd "yaml-${pkgver}"
+}
+
+build() {
+  cd "yaml-${pkgver}"
+
+  export CFLAGS="$VITA_CFLAGS -O3 -DYAML_DECLARE_STATIC"
+
+  ./configure --host=arm-vita-eabi \
+              --prefix="$prefix" \
+              --enable-static \
+              --disable-shared \
+              --disable-debug
+
+  make -j$(nproc)
+}
+
+package() {
+  cd "yaml-${pkgver}"
+  make DESTDIR="$pkgdir" install
+
+  rm -f "$pkgdir/$prefix/lib/libyaml.la"
+
+  local pc_file="$pkgdir/$prefix/lib/pkgconfig/yaml-0.1.pc"
+  if [ -f "$pc_file" ]; then
+    sed -i 's|^Cflags:.*|Cflags: -I${includedir} -DYAML_DECLARE_STATIC|' "$pc_file"
+  fi
+}

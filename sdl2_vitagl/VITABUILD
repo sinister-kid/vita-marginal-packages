@@ -1,0 +1,35 @@
+pkgname=sdl2_vitagl
+pkgver=2.24.0
+pkgrel=1
+url='https://www.libsdl.org'
+_repo="https://github.com/Northfear/SDL.git"
+_branch="vitagl"
+_commit="28a709718422915dab13b6984e6ff8c8e37447c8"
+source=("sdl2_vitagl.patch")
+sha256sums=(5700da38fc54c82cd10fee63d969a8e497fe620ae75780bf1c20c31b392b8344)
+provides=('sdl2')
+conflicts=('sdl2')
+
+prepare () {
+  rm -rf "$pkgname"
+
+  git clone --depth 1 --branch "$_branch" "$_repo" "$pkgname"
+  cd "$pkgname"
+
+  git checkout $_commit
+  patch -p1 < ../sdl2_vitagl.patch
+}
+
+build() {
+  cd "$pkgname"
+
+  cmake -S. -Bbuild -DCMAKE_TOOLCHAIN_FILE=$VITASDK/share/vita.toolchain.cmake -DCMAKE_INSTALL_PREFIX=$prefix \
+		-DVIDEO_VITA_VGL=ON -DCMAKE_BUILD_TYPE=Release ..
+
+  cmake --build build -- -j$(nproc)
+}
+
+package () {
+  cd "$pkgname"
+  DESTDIR="$pkgdir" cmake --install build
+}
