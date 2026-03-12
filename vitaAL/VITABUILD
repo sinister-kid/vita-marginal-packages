@@ -1,0 +1,22 @@
+pkgname=vitaal
+pkgver=1.1
+pkgrel=1
+url'https://github.com/GrapheneCt/vitaAL/'
+source=(
+  "${url}archive/refs/tags/v${pkgver}.tar.gz"
+  "${url}releases/download/v${pkgver}/OpenALHW.suprx"
+  "${url}releases/download/v${pkgver}/OpenALHW_stub.a"
+ )
+sha256sums=(
+  SKIP
+  SKIP
+  SKLP
+)
+
+package () {
+    install OpenALHW.suprx -D -t $pkgdir$prefix/modules
+    install OpenALHW_stub.a -D -t $pkgdir$prefix/lib/
+
+    cd vitaAL-${pkgver}
+    install OpenALHW/include/*.h   -D -t $pkgdir$prefix/include/vitaAL/
+}

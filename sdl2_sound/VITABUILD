@@ -1,18 +1,18 @@
-pkgname=SDL2_sound
+pkgname=sdl2_sound
 pkgver=2.0.4
-pkgrel=1
+pkgrel=2
 url='https://icculus.org/SDL_sound/'
-source=("https://github.com/icculus/SDL_sound/releases/download/v${pkgver}/${pkgname}-${pkgver}.tar.gz")
+source=("https://github.com/icculus/SDL_sound/releases/download/v${pkgver}/SDL2_sound-${pkgver}.tar.gz")
 sha256sums=("f73f6720dba2e677c0bf70d0c76ca3c96d865d04025e49a8b161711685961931")
-depends=('sdl2' 'm')
+depends=('sdl2')
 provides=('sdl2_sound')
 
 prepare () {
-  cd "${pkgname}-${pkgver}"
+  cd "SDL2_sound-${pkgver}"
 }
 
 build() {
-  cd "${pkgname}-${pkgver}"
+  cd "SDL2_sound-${pkgver}"
   mkdir -p build && cd build
   
   cmake -DCMAKE_TOOLCHAIN_FILE=$VITASDK/share/vita.toolchain.cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$prefix -DSDLSOUND_BUILD_STATIC=ON \
@@ -23,10 +23,10 @@ build() {
 }
 
 package () {
-  cd "${pkgname}-${pkgver}/build"
+  cd "SDL2_sound-${pkgver}/build"
   make DESTDIR=$pkgdir install
 
-  local pc_file="$pkgdir/$prefix/lib/pkgconfig/${pkgname}.pc"
+  local pc_file="$pkgdir/$prefix/lib/pkgconfig/SDL2_sound.pc"
   sed -i 's/^Requires:.*/Requires: sdl2/' "$pc_file"
   sed -i 's|^Libs.private:.*|Libs.private: -lm -lSceAudio_stub|' "$pc_file"
 }
