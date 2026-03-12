@@ -1,22 +1,29 @@
 pkgname=vitaal
 pkgver=1.1
 pkgrel=1
-url'https://github.com/GrapheneCt/vitaAL/'
+options=('!strip')
+url='https://github.com/GrapheneCt/vitaAL/'
 source=(
   "${url}archive/refs/tags/v${pkgver}.tar.gz"
   "${url}releases/download/v${pkgver}/OpenALHW.suprx"
   "${url}releases/download/v${pkgver}/OpenALHW_stub.a"
- )
+)
 sha256sums=(
   SKIP
-  SKIP
-  SKLP
+  e4a13d4073fbc773b2cdca279bcb5e2eb5b9b5fc2240b4a670bb5f78d3d41808
+  c2f29031705efeb520538d7fb5281255dc693f1c4ce7de3a3746005283f22983
 )
+noextract=("OpenALHW_stub.a")
+
 
 package () {
-    install OpenALHW.suprx -D -t $pkgdir$prefix/modules
-    install OpenALHW_stub.a -D -t $pkgdir$prefix/lib/
+    mkdir -p "$pkgdir$prefix/modules"
+    mkdir -p "$pkgdir$prefix/lib"
+    mkdir -p "$pkgdir$prefix/include/vitaAL"
 
-    cd vitaAL-${pkgver}
-    install OpenALHW/include/*.h   -D -t $pkgdir$prefix/include/vitaAL/
+    install -m644 "$srcdir/OpenALHW.suprx" "$pkgdir$prefix/modules/"
+    install -m644 "$srcdir/OpenALHW_stub.a" "$pkgdir$prefix/lib/"
+
+    cd "$srcdir/vitaAL-${pkgver}/OpenALHW/include/AL/"
+    install *.h -D -t "$pkgdir$prefix/include/vitaAL/"
 }
