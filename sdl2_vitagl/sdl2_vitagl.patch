@@ -11,20 +11,6 @@ index acde19e27..77e0fe8c9 100644
        SceAppMgr_stub
        SceAppUtil_stub
        SceAudio_stub
-@@ -2508,10 +2506,10 @@ elseif(VITA)
- #  set_property(SOURCE ${SDL2_SOURCE_DIR}/src/video/arm/pixman-arm-neon-asm.S PROPERTY LANGUAGE C)
- 
-   target_compile_definitions(sdl-build-options INTERFACE "-D__VITA__")
--  target_compile_definitions(sdl-build-options INTERFACE "-Dmemcpy=sceClibMemcpy")
--  target_compile_definitions(sdl-build-options INTERFACE "-Dmemset=sceClibMemset")
--  target_compile_definitions(sdl-build-options INTERFACE "-Dmemmove=sceClibMemmove")
--  target_compile_definitions(sdl-build-options INTERFACE "-Dmemcmp=sceClibMemcmp")
-+#  target_compile_definitions(sdl-build-options INTERFACE "-Dmemcpy=sceClibMemcpy")
-+#  target_compile_definitions(sdl-build-options INTERFACE "-Dmemset=sceClibMemset")
-+#  target_compile_definitions(sdl-build-options INTERFACE "-Dmemmove=sceClibMemmove")
-+#  target_compile_definitions(sdl-build-options INTERFACE "-Dmemcmp=sceClibMemcmp")
- 
- #  CheckPTHREAD()
 
 diff --git a/src/video/vita/SDL_vitagles_vgl.c b/src/video/vita/SDL_vitagles_vgl.c
 index c554d6916..c72fe214a 100644
@@ -43,7 +29,7 @@ index c554d6916..c72fe214a 100644
  
          sceSysmoduleLoadModule(SCE_SYSMODULE_IME);
 +
-+        binding_mode = SDL_getenv("VITA_SEMANTIC_BINDING_MODE");
++        binding_mode = SDL_getenv("VGL_SEMANTIC_BINDING_MODE");
 +        if (binding_mode) {
 +            vglSemanticMode vglMode = VGL_MODE_POSTPONED;
 +            if (!strcmp(binding_mode, "SHADER_PAIR")) vglMode = VGL_MODE_SHADER_PAIR;

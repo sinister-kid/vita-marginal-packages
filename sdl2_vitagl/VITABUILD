@@ -1,6 +1,6 @@
 pkgname=sdl2_vitagl
 pkgver=2.24.0
-pkgrel=1
+pkgrel=2
 url='https://www.libsdl.org'
 _repo="https://github.com/Northfear/SDL.git"
 _branch="vitagl"
