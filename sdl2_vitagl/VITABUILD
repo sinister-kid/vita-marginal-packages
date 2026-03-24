@@ -6,7 +6,7 @@ _repo="https://github.com/Northfear/SDL.git"
 _branch="vitagl"
 _commit="28a709718422915dab13b6984e6ff8c8e37447c8"
 source=("sdl2_vitagl.patch")
-sha256sums=(29be43828e36cae84b998e90b2b6d408fb7e8216226b72e74f3438a2245409c6)
+sha256sums=(060b24d88e28598cd273cdd826aac11d4d6c8e81b3ee4ca52b8be635de2b24e3)
 provides=('sdl2')
 conflicts=('sdl2')
 
